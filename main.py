@@ -5,10 +5,10 @@ import json
 import math
 
 random.seed(time.time())
-
+data_path = "GitHub\python-minesweeper\data.json"
 class Window:
     def __init__(self):
-        with open("Python\minesweeper\datajs.json", "r") as i:
+        with open(data_path, "r") as i:
             self.data = json.load(i)
             custom = self.data.get("difficulties")
             
@@ -47,6 +47,8 @@ class Window:
 
         self.reset_button = tk.Button(self.game_frame, text="😀", command=lambda:self.start_func())
         self.main_menu_button = tk.Button(self.game_frame, text="🏠", command=lambda:self.main_menu_func())
+        self.mines_label = tk.Label(self.game_frame, text="000")
+        self.time_label = tk.Label(self.game_frame, text="000")
 
         self.rows = -1
         self.columns = -1
@@ -96,8 +98,11 @@ class Window:
             self.rows = int(self.custom_row_entry.get())
             self.columns = int(self.custom_column_entry.get())
 
-        if self.rows * self.columns <= self.mines:
-            return print("Error: More (or the some amount of) mines than tiles")
+        if self.columns < 7:
+            self.columns = 7
+            print("Warining: Columns didn't exceed the minimum requirement (7), defaulting to 7")
+        if self.rows * self.columns-9 < self.mines:
+            return print("Error: Too many mines!")
 
         self.first_click = True
         self.mine_index_list  = []
@@ -111,10 +116,20 @@ class Window:
         self.game_end = False
         self.reset_button.config(text="😀")
 
-        # update the latest difficulty in data.py
+        temp = 0
+        if self.mines < 10:
+            temp = "00" + str(self.mines)
+        elif self.mines < 100:
+            temp = "0" + str(self.mines)
+        else:
+            temp = str(self.mines)
+        
+        self.mines_label["text"] = temp
+
+        # update the latest difficulty in data.json
         temp = self.data
         temp["difficulty"] = self.difficulty
-        with open("Python\minesweeper\datajs.json", "w") as i:
+        with open(data_path, "w") as i:
             if self.difficulty == "custom":
                 temp["difficulties"]["custom"] = [self.mines, self.rows, self.columns]
             json.dump(temp, i)
@@ -141,7 +156,9 @@ class Window:
             self.reset_button.grid(row=0, column=int(math.floor(self.columns/2)))
         else:
             self.reset_button.grid(row=0, column=int(self.columns/2-1), columnspan=2)
-        self.main_menu_button.grid(row=0, column=0)
+        self.mines_label.grid(row=0, column=0, columnspan=2)
+        self.time_label.grid(row=0, column=self.columns-2, columnspan=2)
+        self.main_menu_button.grid(row=0, column=2)
 
 
     def generate_mines(self, tile_index):
@@ -288,14 +305,33 @@ class Window:
             self.reset_button.config(text="🙁")
 
             for i in self.mine_list:
-                i.config(text="💣", bg="red")
+                i.config(bg="red")
+                if i["text"] != "⚑":
+                    i.config(text="💣")
 
+        # When the user clicks on a tile with MB2 or MB3
         elif tile_type == "flag":
+            temp = int(self.mines_label["text"])
             if self.tiles[tile_index]["text"] == "⚑":
                 self.tiles[tile_index]["text"] = ""
+                temp += 1
+                if temp < 10:
+                    temp = "00" + str(temp)
+                elif temp < 100:
+                    temp = "0" + str(temp)
+                else:
+                    temp = str(temp)
             elif self.tiles[tile_index]["state"] != "disabled":
                 self.tiles[tile_index].config(text="⚑")
-            
+                temp -= 1
+                if temp < 10:
+                    temp = "00" + str(temp)
+                elif temp < 100:
+                    temp = "0" + str(temp)
+                else:
+                    temp = str(temp)
+            self.mines_label["text"] = temp
+
         elif tile_type == "blank" or tile_type == "auto_blank":
             
             # if the game has ended, then don't let the player press any more tiles
