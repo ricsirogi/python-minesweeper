@@ -277,7 +277,7 @@ class Window:
         if self.tiles[tile_index]["state"] == "disabled":
             
             # if the tile is pressed automatically, then return
-            if tile_type == "auto_blank":
+            if tile_type == "auto_blank" or tile_type == "flag":
                 return
             
             mines = 0
@@ -319,21 +319,30 @@ class Window:
             if self.tiles[tile_index]["text"] == "⚑":
                 self.tiles[tile_index]["text"] = ""
                 temp += 1
-                if temp < 10:
-                    temp = "00" + str(temp)
-                elif temp < 100:
-                    temp = "0" + str(temp)
-                else:
-                    temp = str(temp)
+
             elif self.tiles[tile_index]["state"] != "disabled":
                 self.tiles[tile_index].config(text="⚑")
                 temp -= 1
+
+            # if the mines counter on the top left is positive
+            if temp >= 0:
                 if temp < 10:
                     temp = "00" + str(temp)
                 elif temp < 100:
                     temp = "0" + str(temp)
                 else:
                     temp = str(temp)
+
+            # if the mines counter on the top left is negative
+            else:
+                temp = -temp
+                if -temp > -10:
+                    temp = "-00" + str(temp)
+                elif -temp > -100:
+                    temp = "-0" + str(temp)
+                else:
+                    temp = "-" + str(temp)
+
             self.mines_label["text"] = temp
 
         elif tile_type == "blank" or tile_type == "auto_blank":
