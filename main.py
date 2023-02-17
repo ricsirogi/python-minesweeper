@@ -5,7 +5,9 @@ import json
 import math
 
 random.seed(time.time())
+
 data_path = "GitHub\python-minesweeper\data.json"
+
 class Window:
     def __init__(self):
         with open(data_path, "r") as i:
@@ -100,7 +102,7 @@ class Window:
 
         if self.columns < 7:
             self.columns = 7
-            print("Warining: Columns didn't exceed the minimum requirement (7), defaulting to 7")
+            print("Warning: Columns didn't exceed the minimum requirement (7), defaulting to 7")
         if self.rows * self.columns-9 < self.mines:
             return print("Error: Too many mines!")
 
@@ -197,63 +199,63 @@ class Window:
 
         for i in range(3):
 
-                # if we're checking the left column, an the presse tile is on the left side, then continue
-                if i == 0 and (tile_index in self.left_side_tile_index_list): 
-                    continue
-                # if we're checking the right column, an the presse tile is on the right side, then continue
-                elif i == 2 and (tile_index in self.right_side_tile_index_list):
-                    continue
-                
-                # get the position of the tile above, middle, and below of the currrently checked column 
-                up = tile_index - self.columns - 1 + i 
-                middle = tile_index - 1 + i
-                down = tile_index + self.columns - 1 + i
+            # if we're checking the left column, and the pressed tile is on the left side, then continue
+            if i == 0 and (tile_index in self.left_side_tile_index_list): 
+                continue
+            # if we're checking the right column, and the pressed tile is on the right side, then continue
+            elif i == 2 and (tile_index in self.right_side_tile_index_list):
+                continue
+            
+            # get the position of the tile above, middle, and below of the currrently checked column 
+            up = tile_index - self.columns - 1 + i 
+            middle = tile_index - 1 + i
+            down = tile_index + self.columns - 1 + i
 
-                #! Above row check
-                # if the clicked tile is on the top row, it doesn't need to check the row above it
-                if tile_index >= self.columns:
-                    if i == 0:
-                        replace = 0
-                        positions.pop(replace)
-                        positions.insert(replace, up)
-                    elif i == 1:
-                        replace = 3
-                        positions.pop(replace)
-                        positions.insert(replace, up)
-                    elif i == 2:
-                        replace = 5
-                        positions.pop(replace)
-                        positions.insert(replace, up)
+            #! Above row check
+            # if the clicked tile is on the top row, it doesn't need to check the row above it
+            if tile_index >= self.columns:
+                if i == 0:
+                    replace = 0
+                    positions.pop(replace)
+                    positions.insert(replace, up)
+                elif i == 1:
+                    replace = 3
+                    positions.pop(replace)
+                    positions.insert(replace, up)
+                elif i == 2:
+                    replace = 5
+                    positions.pop(replace)
+                    positions.insert(replace, up)
 
-                #! Middle row check
-                # if i == 1, that means that it tries to check itself, which is not neccessary
-                if i != 1:
-                    if i == 0:
-                        replace = 1
-                        positions.pop(replace)
-                        positions.insert(replace, middle)
-                    elif i == 1:
-                        pass
-                    elif i == 2:
-                        replace = 6
-                        positions.pop(replace)
-                        positions.insert(replace, middle)
+            #! Middle row check
+            # if i == 1, that means that it tries to check itself, which is not neccessary
+            if i != 1:
+                if i == 0:
+                    replace = 1
+                    positions.pop(replace)
+                    positions.insert(replace, middle)
+                elif i == 1:
+                    pass
+                elif i == 2:
+                    replace = 6
+                    positions.pop(replace)
+                    positions.insert(replace, middle)
                 
-                #! Bottom row check
-                # if the clicked tile is on the bottom row, it doesn't need to check the row below it
-                if tile_index <= (self.columns * self.rows) - self.columns - 1:
-                    if i == 0:
-                        replace = 2
-                        positions.pop(replace)
-                        positions.insert(replace, down)
-                    elif i == 1:
-                        replace = 4
-                        positions.pop(replace)
-                        positions.insert(replace, down)
-                    elif i == 2:
-                        replace = 7
-                        positions.pop(replace)
-                        positions.insert(replace, down)
+            #! Bottom row check
+            # if the clicked tile is on the bottom row, it doesn't need to check the row below it
+            if tile_index <= (self.columns * self.rows) - self.columns - 1:
+                if i == 0:
+                    replace = 2
+                    positions.pop(replace)
+                    positions.insert(replace, down)
+                elif i == 1:
+                    replace = 4
+                    positions.pop(replace)
+                    positions.insert(replace, down)
+                elif i == 2:
+                    replace = 7
+                    positions.pop(replace)
+                    positions.insert(replace, down)
 
         return positions
 
@@ -297,6 +299,8 @@ class Window:
                             self.tile_press("auto_blank", i)
 
         if tile_type == "mine":
+            if self.tiles[tile_index]["text"] == "⚑":
+                return
             self.game_end = True
 
             for i in self.tiles:
