@@ -1,1 +1,1 @@
-{"difficulty": "custom", "difficulties": {"begginer": [10, 10, 10], "intermediate": [40, 14, 16], "expert": [99, 16, 30], "custom": [40, 20, 20]}}
+{"difficulty": "begginer", "difficulties": {"begginer": [10, 10, 10], "intermediate": [40, 14, 16], "expert": [99, 16, 30], "custom": [40, 20, 20]}, "winning_times": {"begginer": [21, 10], "intermediate": [], "expert": []}}
